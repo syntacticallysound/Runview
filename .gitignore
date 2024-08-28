@@ -1,2 +1,5 @@
 /.environ
 /tests.py
+/build
+/dist
+/RunView_Main.spec
