@@ -88,6 +88,10 @@ class SettingsWindow(QWidget):
             self.r = DelConf(self.Tag, self)
             self.r.show()
 
+        def addnewtag():
+            self.w = NewTagWindow(self)
+            self.w.show()
+
         self.toolBar = QToolBar()                           
 
         self.toolButton = QToolButton()                     
@@ -95,7 +99,14 @@ class SettingsWindow(QWidget):
         self.toolButton.setText("Delete Tag")              
         self.toolButton.setCheckable(False)                 
         self.toolButton.setAutoExclusive(True)              
-        self.toolBar.addWidget(self.toolButton)             
+        self.toolBar.addWidget(self.toolButton)  
+
+        self.toolButton1 = QToolButton()                     
+        self.toolButton1.clicked.connect(addnewtag)
+        self.toolButton1.setText("Add Tag")              
+        self.toolButton1.setCheckable(False)                 
+        self.toolButton1.setAutoExclusive(True)              
+        self.toolBar.addWidget(self.toolButton1)                 
         # Add buttons to toolbar
 
         # if self.toolButton.clicked:
@@ -105,7 +116,7 @@ class SettingsWindow(QWidget):
         self.layout.addWidget(self.toolBar)
         self.layout.addWidget(self.tableWidget)
         self.setLayout(self.layout)
-
+        
         def AmendTag():
 
             self.TagName = self.tableWidget.item(self.tableWidget.currentRow(), 0)
@@ -113,7 +124,9 @@ class SettingsWindow(QWidget):
         # ------------- Pass Current Instance to next Window ▼ otherwise you will have no control over updating it
             self.w = TagAmend(self.TagName.text(),self.TagPath.text(),self)
             self.w.show()
-            
+
+       
+
         #TableConnections  
         self.tableWidget.doubleClicked.connect(AmendTag)
         self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)  
@@ -312,6 +325,113 @@ class TagAdd(QWidget):
         self.layout1.addWidget(self.bt_cancel)
 
         self.setLayout(self.layout1)
+
+
+
+    def __init__(self, TagName, TagPath, SettingTbl):
+        super().__init__()
+
+        self.layout1 = QVBoxLayout()
+        self.layout2 = QHBoxLayout()
+        self.setWindowTitle("New Tag Properties")
+        self.setGeometry(200,200,320,100)
+        
+        
+        self.Tag_label = QLabel("Run Tag")
+        self.Tag_Value = QLineEdit (TagName[:-4])
+        self.TagValueStore = self.Tag_Value.text()+".exe"   #stores value on load
+        
+        self.TagPath_label = QLabel("Run Path")
+        self.Tag_Path = QLineEdit (str(TagPath)) 
+        self.TagPathStore =self.Tag_Path.text()             #store value on load
+
+        self.bt_update =QPushButton("Update")
+        self.bt_cancel =QPushButton("Cancel")
+        
+        # NOTE: Update functioning correctly however not refreshing in place
+        col1 = 0
+        col2 = 1
+               
+        #iteration counter
+        count = 0   
+
+        def update():
+            self.hide()
+            SettingTbl.close()
+            AmendRunTag(self.TagValueStore,self.Tag_Value.text(),self.Tag_Path.text())
+            c2k = combine_key2path()
+            SettingsWindow()
+                
+        def closefrm():
+            self.close()
+           
+        #    MainWindow.SettingsDisplay(self,checked=None)
+
+        #    print(self.TagValueStore,self.Tag_Value.text(),self.Tag_Path.text())
+
+        self.bt_update.clicked.connect(update)
+        self.bt_cancel.clicked.connect(closefrm)
+        
+        # self.Tag_Value.text(),self.Tag_Path.text())
+        
+        #AddTo Layout
+        self.layout1.addWidget(self.Tag_label)
+        self.layout1.addWidget(self.Tag_Value)
+        self.layout1.addWidget(self.TagPath_label)
+        self.layout1.addWidget(self.Tag_Path)
+        self.layout1.addWidget(self.bt_update)
+        self.layout1.addWidget(self.bt_cancel)
+
+        self.setLayout(self.layout1)
+
+
+class NewTagWindow(QWidget):
+
+    def __init__(self, SettingTbl):
+        super().__init__()
+
+        self.setting_tbl = SettingTbl  # Store the settings window reference
+
+        self.layout1 = QVBoxLayout()
+        self.layout2 = QHBoxLayout()
+        self.setWindowTitle("New Tag Properties")
+        self.setGeometry(200,200,320,100)
+        
+        self.Tag_label = QLabel("Run Tag")
+        self.Tag_Value = QLineEdit () 
+        self.TagValueStore = self.Tag_Value.text()  # Stores value on load
+        
+        self.TagPath_label = QLabel("Run Path")
+        self.Tag_Path = QLineEdit () 
+        self.TagPathStore =self.Tag_Path.text()+".exe"  # Store value on load
+
+        self.bt_update = QPushButton("Add New Run Command")
+        self.bt_cancel = QPushButton("Cancel")
+        
+        def update():
+            self.hide()
+            AddRunTag(self.Tag_Value.text(),self.Tag_Path.text())
+            c2k = combine_key2path()
+            self.setting_tbl.close()  # Close the settings window
+            SettingsWindow()
+                
+        def closefrm():
+            self.close()
+           
+        self.bt_update.clicked.connect(update)
+        self.bt_cancel.clicked.connect(closefrm)
+        
+        # Add to Layout
+        self.layout1.addWidget(self.Tag_label)
+        self.layout1.addWidget(self.Tag_Value)
+        self.layout1.addWidget(self.TagPath_label)
+        self.layout1.addWidget(self.Tag_Path)
+        self.layout1.addWidget(self.bt_update)
+        self.layout1.addWidget(self.bt_cancel)
+
+        self.setLayout(self.layout1)
+        self.show()
+
 
 app = QApplication(sys.argv)
 
