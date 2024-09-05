@@ -1,4 +1,4 @@
-# Command Control Application
+# Custom Run Commands
 
 This is a GUI-based application built using PyQt5 that allows you to execute and manage system commands easily. The application provides a simple interface to run commands, and it also allows you to manage a list of commands with tags for quick access.
 
@@ -58,11 +58,7 @@ This is a GUI-based application built using PyQt5 that allows you to execute and
    - **Delete a Tag:** Select a tag from the list and click "Delete Tag".
    - **Amend a Tag:** Double-click on a tag to modify its name or path.
 
-5. **Drag the Window:**
-
-   - Click and drag anywhere on the window to move it around the screen.
-
-6. **Close the Application:**
+5. **Close the Application:**
 
    - Press `Esc` or close the window to exit the application.
 
